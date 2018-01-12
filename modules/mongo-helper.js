@@ -9,11 +9,15 @@ function insertRecords(recordset, callback) {
     const record = first(recordset);
     const remaining = rest(recordset);
 
-    // Use db.scrapedData to create a new record
-    // If there are more records to create, call insertRecords with the rest of the array
-    // If there are no more records to create, call the callback
-
-    // What happens if an error occurs? How would you handle it?
+	db.Article.create(record, function (error) {
+        if (error) {
+            callback(error);
+        } else if (remaining.length === 0) {
+            callback(null);
+        } else {
+            insertRecords(remaining, callback);
+        }
+    });
 }
 
 module.exports = {

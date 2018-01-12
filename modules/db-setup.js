@@ -1,8 +1,10 @@
 'use strict';
 
-const mongojs = require('mongojs');
+const db = require('./models');
 
-const databaseUrl = 'scraper';
-const collections = ['scrapedData'];
+const mongoose = require('mongoose');
+mongoose.connect("mongodb://localhost/scraper", {});
 
-module.exports = mongojs.apply(databaseUrl, collections);
+db.mongoose = mongoose;
+
+module.exports = db;

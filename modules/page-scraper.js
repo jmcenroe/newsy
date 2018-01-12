@@ -3,19 +3,23 @@
 const cheerio = require('cheerio');
 const request = require('request');
 
-const urlToScrape = 'https://news.ycombinator.com/';
+const urlToScrape = 'https://www.sandiegoreader.com/news/san-diego-beer-news/';
 
 function getArticleData(htmlToScrape) {
+    const $ = cheerio.load(htmlToScrape);
     let articles = [];
-    
-    // Load the scraped HTML into cheerio
-    
-    // Hacker new uses tr.athing to separate each article
-    // Loop through each tr.athing element to capture all of your article data.
-    // How would we access the td element containing the article data?
 
-    // Our handlebars template will expect the article data to look like the following:
-    // { title: title, link: link }
+    $('tr.athing').each(function (index, element) {
+        const articleElt = $(element).children()[2];
+
+        const title = $(articleElt).text();
+        const link = $(articleElt).children().first().attr('href');
+
+        articles.push({
+            title: title,
+            link: link
+        });
+    });
 
     return articles;
 }
@@ -34,4 +38,3 @@ function scrapeData(callback) {
 module.exports = {
     scrapeData: scrapeData
 }
-

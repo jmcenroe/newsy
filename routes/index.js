@@ -5,10 +5,9 @@ var router = express.Router();
 
 const scrapedDataBuilder = require('../modules/scraped-data-builder');
 const db = require('../modules/db-setup');
-const mongojs = require('mongojs');
 
 router.get('/', function (request, response) {
-    db.scrapedData.find(function (error, articles) {
+    db.Article.find(function (error, articles) {
         if (error) {
             response.status(500).end();
         } else {
@@ -22,14 +21,14 @@ router.get('/', function (request, response) {
 router.get('/article/:id', function (request, response) {
     const articleId = request.params.id;
 
-    db.scrapedData.find({ _id: mongojs.ObjectId(articleId) }, function (error, articleData) {
+    db.Article.findById(articleId)
+    .populate('comments')
+    .exec(function (error, articleData) {
         if (error) {
             response.status(500).end();
         } else {
-            const article = articleData[0];
-
             response.render('article', {
-                article: article
+                article: articleData
             });
         }
     });
@@ -38,19 +37,18 @@ router.get('/article/:id', function (request, response) {
 router.post('/addComment/:id', function (request, response) {
     const articleId = request.params.id;
 
-    db.scrapedData.update(
-        { _id: mongojs.ObjectId(articleId) },
-        {
-            $push: {
-                comments: {
-                    name: request.body.name,
-                    email: request.body.email,
-                    comment: request.body.comment
-                }
-            }
-        },
-        function () {
-            response.redirect(`/article/${articleId}`);
+    db.Article.findById(articleId,
+        function (error, document) {
+            const comment = new db.Comment({
+                name: request.body.name,
+                email: request.body.email,
+                comment: request.body.comment
+            });
+
+            document.comments.push(comment);
+            document.save(function () {
+                response.redirect(`/article/${articleId}`);
+            });
         });
 });
 
