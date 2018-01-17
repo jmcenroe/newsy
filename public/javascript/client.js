@@ -8,8 +8,5 @@ $('#user').click(function() {
     $.post('/user',data).then(function(response) {
 
         $.post('/',data);
-
     });
-
-
 });

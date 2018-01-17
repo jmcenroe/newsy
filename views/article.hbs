@@ -1,41 +1,44 @@
-<h1>
-    <a href="{{article.link}}">{{article.title}}</a>
-</h1>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
 
-{{#if article.comments}}
-<h3>Comments</h3>
+        {{#if user}}
+        <h1 class='navbar-brand'>Welcome {{this.email}}</h1>
+        {{else}}
+        <h1 class="navbar-brand">Sign In:</h1>
+        <form class="form-inline">
+            <label class="sr-only" for="inlineFormInputName2">Name</label>
+            <input type="text" class="form-control mb-2 mr-sm-2" id="name" placeholder="Name">
+            <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
+            <div class="input-group mb-2 mr-sm-2">
+                <input type="text" class="form-control" id="email" placeholder="Email">
+            </div>
+            <button type="submit" class="btn btn-primary mb-2" id='user'>Submit</button>
+        </form>
+        {{/if}}
+    </div>
+</nav>
 
-<ul>
-    {{#each article.comments}}
-    <li>
-        <dl>
-            <dd>
-                <a href="mailto:{{this.email}}">{{this.name}}</a>
-            </dd>
-            <dd>{{this.comment}}</dd>
-        </dl>
-    </li>
-    {{/each}}
-</ul>
-{{/if}}
+<div class='container'>
 
-<form method="POST" action="/addComment/{{article._id}}">
-    <h3>What did you think of this?</h3>
-    <section>
-        <label for="name">Your name:</label>
-        <input type="text" id="name" name="name">
-    </section>
-    <section>
-<<<<<<< HEAD
-        <label for="email">Your email:</label>
-=======
-        <label for="email">Your name:</label>
->>>>>>> 1299211c45d62aec281e25a3917751e8c6b3c5c0
-        <input type="text" id="email" name="email">
-    </section>
-    <section>
-        <label for="comment">Comment</label>
-        <textarea name="comment" id="comment" cols="30" rows="10"></textarea>
-    </section>
-    <button type="submit">Add a comment</button>
-</form>
+    <div class='container header'>
+        <h1 class='inline'>All articles: </h1>
+        <form method="GET" action="/scrape">
+            <button class="btn btn-primary float-right" type='submit'>Scrape New Articles</button>
+        </form>
+    </div>
+
+    <div class='container'>
+        <div class='row'>
+
+            <ol>
+                {{#each articles}}
+                <li>
+                    <a href="./article/{{this._id}}">{{this.title}}</a>
+                </li>
+                {{else}}
+                <h2>No articles availble. Hit the Scrape New Articles button to get the latest articles</h2>
+                {{/each}}
+            </ol>
+        </div>
+    </div>
+</div>
